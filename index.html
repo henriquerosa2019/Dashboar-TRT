@@ -147,7 +147,7 @@ function load(){
   }catch(e){}
   return {mat:DEF_MAT.map(m=>({...m})),sem:DEF_SEM.map(s=>({...s}))};
 }
-function save(){try{sessionStorage.setItem('trt3',JSON.stringify(ST))}catch(e){}}
+function save(){try{localStorage.setItem('trt3',JSON.stringify(ST))}catch(e){}}
 
 const ST=load();
 
