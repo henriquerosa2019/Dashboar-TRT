@@ -7,7 +7,7 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f5f0;color:#1a1a1a;padding:24px 16px;min-height:100vh}
-.dash{max-width:960px;margin:0 auto}
+.dash{max-width:980px;margin:0 auto}
 .top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:12px}
 .top-title{font-size:20px;font-weight:600;color:#1a1a1a;display:flex;align-items:center;gap:8px}
 .top-sub{font-size:13px;color:#666;margin-top:3px}
@@ -56,14 +56,22 @@ tr:hover td{background:#fafaf8}
 .expand-btn:hover{color:#666}
 .expand-btn.open{transform:rotate(180deg)}
 .prog-row td{padding:0!important;background:#fafaf8}
-.sub-inner{padding:8px 12px 10px 44px}
-.sub-item{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid #f0f0ec}
-.sub-item:last-child{border-bottom:none}
-.sub-name{flex:1;font-size:12px;color:#555}
-.sub-bar-out{width:90px;height:5px;background:#e8e8e2;border-radius:3px;overflow:hidden;flex-shrink:0}
-.sub-bar-in{height:100%;border-radius:3px}
-.sub-pct{font-size:11px;font-weight:600;min-width:34px;text-align:right}
-.sub-nd{font-size:11px;color:#bbb;font-style:italic;min-width:34px;text-align:right}
+/* subtópicos */
+.sub-table{width:100%;border-collapse:collapse;font-size:12px}
+.sub-table th{font-size:10px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.04em;padding:6px 10px 6px;background:#f5f5f0;border-bottom:1px solid #ebebeb;white-space:nowrap}
+.sub-table td{padding:6px 10px;border-bottom:1px solid #f0f0ec;vertical-align:middle;background:transparent}
+.sub-table tr:last-child td{border-bottom:none}
+.sub-table tr:hover td{background:#f0f0ec}
+.sub-name-cell{font-size:12px;color:#444;min-width:160px}
+.sub-name-cell.done{color:#aaa;text-decoration:line-through}
+.time-input{width:52px;border:1px solid #ddd;border-radius:5px;padding:3px 5px;font-size:12px;text-align:center;background:#fff;color:#1a1a1a;font-family:inherit}
+.time-input:focus{outline:none;border-color:#378ADD;box-shadow:0 0 0 2px rgba(55,138,221,.1)}
+.time-sep{font-size:12px;color:#aaa;padding:0 1px}
+.rev-input{width:44px;border:1px solid #ddd;border-radius:5px;padding:3px 5px;font-size:12px;text-align:center;background:#fff;color:#1a1a1a;font-family:inherit}
+.rev-input:focus{outline:none;border-color:#378ADD;box-shadow:0 0 0 2px rgba(55,138,221,.1)}
+.sub-acerto{font-size:11px;font-weight:600;min-width:32px;text-align:center}
+.sub-bar-wrap{width:70px;height:4px;background:#e8e8e2;border-radius:2px;overflow:hidden}
+.sub-bar-fill{height:100%;border-radius:2px}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;padding:16px}
 .modal-overlay.open{display:flex}
 .modal-box{background:#fff;border-radius:12px;padding:24px;width:100%;max-width:500px;box-shadow:0 20px 60px rgba(0,0,0,.2)}
@@ -86,8 +94,8 @@ tr:hover td{background:#fafaf8}
     <div class="top-sub">Controle de estudos · 16 semanas · Meta: 448h</div>
   </div>
   <div style="display:flex;gap:8px;flex-wrap:wrap">
-    <button class="btn-exp btn-green" onclick="saveBackup()" title="Salvar backup em arquivo .json">&#128190; Salvar backup</button>
-    <button class="btn-exp" onclick="document.getElementById('fileInput').click()" title="Carregar backup salvo anteriormente">&#128194; Carregar backup</button>
+    <button class="btn-exp btn-green" onclick="saveBackup()">&#128190; Salvar backup</button>
+    <button class="btn-exp" onclick="document.getElementById('fileInput').click()">&#128194; Carregar backup</button>
     <input type="file" id="fileInput" accept=".json" style="display:none" onchange="loadBackup(event)">
     <button class="btn-exp" onclick="openExport()">&#128196; Exportar para Notion</button>
   </div>
@@ -142,12 +150,12 @@ tr:hover td{background:#fafaf8}
   </div>
 </div>
 
-</div><!-- .dash -->
+</div>
 
 <div class="modal-overlay" id="exportModal" onclick="handleOverlayClick(event)">
   <div class="modal-box">
     <div class="modal-title">&#128196; Exportar para Notion</div>
-    <div class="modal-sub">Copie o Markdown abaixo e cole em qualquer página do Notion. As tabelas são reconhecidas automaticamente.</div>
+    <div class="modal-sub">Copie o Markdown abaixo e cole em qualquer página do Notion.</div>
     <textarea class="export-area" id="exportArea" readonly></textarea>
     <div class="modal-btns">
       <button class="mbtn" onclick="doCopy('md')">&#128203; Copiar Markdown</button>
@@ -161,80 +169,15 @@ tr:hover td{background:#fafaf8}
 const FASES=["Fase 1","Fase 1","Fase 1","Fase 1","Fase 1","Fase 1","Fase 2","Fase 2","Fase 2","Fase 2","Simulado","Fase 3","Fase 3","Revisão","Revisão","Final"];
 const PRIMAP={MÁXIMA:"bmax",ALTA:"balta",MÉDIA:"bmed"};
 
-const SUBS={
-  "Língua Portuguesa":[
-    {n:"Acentuação",p:78},{n:"Ortografia",p:50},{n:"Estrutura e Formação das Palavras",p:100},
-    {n:"Classes de palavras",p:66},{n:"Verbos",p:49},{n:"Sintaxe da Oração",p:91},
-    {n:"Pronomes Relativos",p:67},{n:"Crase",p:100},{n:"Colocação Pronominal",p:71},
-    {n:"Concordância Verbal e Nominal",p:33},{n:"Pontuação",p:100},{n:"Período composto",p:0},
-    {n:"Redação Oficial",p:100},{n:"Interpretação de Textos",p:45},{n:"Discursiva — Redação",p:null}
-  ],
-  "Raciocínio Lógico":[
-    {n:"Lógica Proposicional",p:56},{n:"Lógica de Argumentação",p:88},
-    {n:"Lógica de Associação / Verdades e Mentiras",p:83},{n:"Operações com Conjuntos",p:67},
-    {n:"Princípio da Casa dos Pombos",p:100},{n:"Sequências Lógicas",p:100},
-    {n:"Análise Combinatória",p:100},{n:"Probabilidade",p:100},{n:"Matemática Básica",p:0},
-    {n:"MDC e MMC",p:83},{n:"Equações e Sistemas",p:0},{n:"Razão e Proporção",p:67},
-    {n:"Porcentagem",p:50},{n:"Juros simples",p:60},{n:"Juros compostos",p:0}
-  ],
-  "Legislação":[
-    {n:"Lei 8.112/90",p:88},{n:"Lei 8.429 — Improbidade Administrativa",p:98},
-    {n:"Lei 9.784/99 — Processo Administrativo",p:100},{n:"Lei de Licitações 14.133/2021",p:64},
-    {n:"LGPD — Lei 13.709/2018",p:100},{n:"Estatuto da Pessoa com Deficiência",p:75},
-    {n:"Resolução CNJ 400/2021",p:null}
-  ],
-  "Administração Pública":[
-    {n:"Conceitos e Introdução",p:80},{n:"Organizações formais modernas",p:100},
-    {n:"Processo Organizacional",p:100},{n:"Planejamento Estratégico",p:83},
-    {n:"Estrutura Organizacional",p:100},{n:"Controle e Indicadores",p:100},
-    {n:"Comunicação Organizacional",p:0},{n:"Gestão por processos",p:20},
-    {n:"Gestão por projetos",p:100},{n:"Gestão para resultados",p:0},
-    {n:"Gestão de contratos",p:75},{n:"Gestão da qualidade",p:100},
-    {n:"Gestão de riscos",p:100},{n:"Gestão de Pessoas",p:100},
-    {n:"Gestão de desempenho",p:100},{n:"Comunicação pública",p:84},
-    {n:"Ética no Serviço Público",p:82}
-  ],
-  "Gestão Pública":[
-    {n:"Orçamento público",p:75},{n:"Princípios orçamentários",p:98},
-    {n:"Leis orçamentárias",p:33},{n:"Receita pública",p:64},
-    {n:"Despesa pública",p:100},{n:"Ciclo orçamentário",p:0},
-    {n:"Emendas ao orçamento",p:null},{n:"Classificação de Materiais",p:78},
-    {n:"Cadastro, pedido e compras",p:50},{n:"Estoques e almoxarifado",p:56},
-    {n:"Armazenamento e layout",p:0},{n:"Distribuição e transportes",p:50},
-    {n:"Ciclo de compras no setor público",p:null},{n:"Gestão patrimonial",p:67},
-    {n:"Lei de Acesso à Informação",p:67}
-  ],
-  "Dir. Constitucional":[
-    {n:"Princípios fundamentais",p:91},{n:"Teoria dos Direitos Fundamentais",p:86},
-    {n:"Direitos individuais e coletivos",p:96},{n:"Remédios Constitucionais",p:89},
-    {n:"Direitos sociais",p:81},{n:"Nacionalidade",p:86},{n:"Direitos políticos",p:80},
-    {n:"Partidos políticos",p:86},{n:"Organização do Estado",p:68},
-    {n:"Administração Pública",p:100},{n:"Poder Executivo",p:100},
-    {n:"Poder Legislativo",p:67},{n:"Poder Judiciário",p:0}
-  ],
-  "Processo do Trabalho":[
-    {n:"Fontes do Dir. Processual",p:56},{n:"Justiça do Trabalho",p:91},
-    {n:"Serviços auxiliares",p:96},{n:"Ministério Público do Trabalho",p:null},
-    {n:"Princípios do Dir. Processual",p:100},{n:"Atos, Termos e Prazos",p:92},
-    {n:"Despesas Processuais",p:61},{n:"Partes e Procuradores",p:null},
-    {n:"Dissídios Individuais",p:null},{n:"Audiências Trabalhistas",p:null},
-    {n:"Provas",p:null},{n:"Procedimentos",p:null},{n:"Execução",p:null},
-    {n:"Embargos à Execução",p:null},{n:"Prescrição e Decadência",p:null},
-    {n:"Processo Judicial Eletrônico",p:null},{n:"Procedimentos Especiais",p:null}
-  ],
-  "Direito do Trabalho":[
-    {n:"Princípios do Dir. do Trabalho",p:null},{n:"Fontes do Dir. do Trabalho",p:100},
-    {n:"Direitos constitucionais dos trabalhadores",p:null},{n:"Direito coletivo",p:null},
-    {n:"Relação de Emprego",p:89},{n:"Sujeitos da Relação de Emprego",p:65},
-    {n:"Contrato Individual de Trabalho",p:78},{n:"Extinção do Contrato",p:73},
-    {n:"Terceirização e Trabalho Temporário",p:null},{n:"Negociação Coletiva",p:null},
-    {n:"Greve",p:null},{n:"Aviso Prévio e Dispensa Coletiva",p:38},
-    {n:"Estabilidade e Garantia Provisória",p:81},{n:"Jornada de Trabalho",p:84},
-    {n:"Salário e Remuneração",p:null},{n:"FGTS",p:null},
-    {n:"Trabalho do Menor",p:null},{n:"Trabalho da Mulher",p:null},
-    {n:"Segurança e Medicina do Trabalho",p:null},{n:"Teletrabalho",p:100},
-    {n:"Dano Extrapatrimonial",p:null}
-  ]
+const SUBS_DEF={
+  "Língua Portuguesa":["Acentuação","Ortografia","Estrutura e Formação das Palavras","Classes de palavras","Verbos","Sintaxe da Oração","Pronomes Relativos","Crase","Colocação Pronominal","Concordância Verbal e Nominal","Pontuação","Período composto","Redação Oficial","Interpretação de Textos","Discursiva — Redação"],
+  "Raciocínio Lógico":["Lógica Proposicional","Lógica de Argumentação","Lógica de Associação / Verdades e Mentiras","Operações com Conjuntos","Princípio da Casa dos Pombos","Sequências Lógicas","Análise Combinatória","Probabilidade","Matemática Básica","MDC e MMC","Equações e Sistemas","Razão e Proporção","Porcentagem","Juros simples","Juros compostos"],
+  "Legislação":["Lei 8.112/90","Lei 8.429 — Improbidade Administrativa","Lei 9.784/99 — Processo Administrativo","Lei de Licitações 14.133/2021","LGPD — Lei 13.709/2018","Estatuto da Pessoa com Deficiência","Resolução CNJ 400/2021"],
+  "Administração Pública":["Conceitos e Introdução","Organizações formais modernas","Processo Organizacional","Planejamento Estratégico","Estrutura Organizacional","Controle e Indicadores","Comunicação Organizacional","Gestão por processos","Gestão por projetos","Gestão para resultados","Gestão de contratos","Gestão da qualidade","Gestão de riscos","Gestão de Pessoas","Gestão de desempenho","Comunicação pública","Ética no Serviço Público"],
+  "Gestão Pública":["Orçamento público","Princípios orçamentários","Leis orçamentárias","Receita pública","Despesa pública","Ciclo orçamentário","Emendas ao orçamento","Classificação de Materiais","Cadastro, pedido e compras","Estoques e almoxarifado","Armazenamento e layout","Distribuição e transportes","Ciclo de compras no setor público","Gestão patrimonial","Lei de Acesso à Informação"],
+  "Dir. Constitucional":["Princípios fundamentais","Teoria dos Direitos Fundamentais","Direitos individuais e coletivos","Remédios Constitucionais","Direitos sociais","Nacionalidade","Direitos políticos","Partidos políticos","Organização do Estado","Administração Pública","Poder Executivo","Poder Legislativo","Poder Judiciário"],
+  "Processo do Trabalho":["Fontes do Dir. Processual","Justiça do Trabalho","Serviços auxiliares","Ministério Público do Trabalho","Princípios do Dir. Processual","Atos, Termos e Prazos","Despesas Processuais","Partes e Procuradores","Dissídios Individuais","Audiências Trabalhistas","Provas","Procedimentos","Execução","Embargos à Execução","Prescrição e Decadência","Processo Judicial Eletrônico","Procedimentos Especiais"],
+  "Direito do Trabalho":["Princípios do Dir. do Trabalho","Fontes do Dir. do Trabalho","Direitos constitucionais dos trabalhadores","Direito coletivo","Relação de Emprego","Sujeitos da Relação de Emprego","Contrato Individual de Trabalho","Extinção do Contrato","Terceirização e Trabalho Temporário","Negociação Coletiva","Greve","Aviso Prévio e Dispensa Coletiva","Estabilidade e Garantia Provisória","Jornada de Trabalho","Salário e Remuneração","FGTS","Trabalho do Menor","Trabalho da Mulher","Segurança e Medicina do Trabalho","Teletrabalho","Dano Extrapatrimonial"]
 };
 
 const DEF_MAT=[
@@ -249,18 +192,46 @@ const DEF_MAT=[
 ];
 const DEF_SEM=Array.from({length:16},(_,i)=>({sem:i+1,horas:0}));
 
-function load(){
-  try{const s=localStorage.getItem('trt4');if(s)return JSON.parse(s);}catch(e){}
-  return{mat:DEF_MAT.map(m=>({...m})),sem:DEF_SEM.map(s=>({...s})),expanded:{}};
+function defSubData(matName){
+  const names=SUBS_DEF[matName]||[];
+  const out={};
+  names.forEach(n=>{out[n]={h:0,m:0,rev:0,ok:false};});
+  return out;
 }
-function save(){try{localStorage.setItem('trt4',JSON.stringify(ST))}catch(e){}}
+
+function load(){
+  try{const s=localStorage.getItem('trt5');if(s)return JSON.parse(s);}catch(e){}
+  const mat=DEF_MAT.map(m=>({...m}));
+  const subData={};
+  mat.forEach(m=>{subData[m.name]=defSubData(m.name);});
+  return{mat,sem:DEF_SEM.map(s=>({...s})),expanded:{},subData};
+}
+function save(){try{localStorage.setItem('trt5',JSON.stringify(ST))}catch(e){}}
 
 const ST=load();
 if(!ST.expanded)ST.expanded={};
+if(!ST.subData)ST.subData={};
+ST.mat.forEach(m=>{
+  if(!ST.subData[m.name])ST.subData[m.name]=defSubData(m.name);
+  const names=SUBS_DEF[m.name]||[];
+  names.forEach(n=>{if(!ST.subData[m.name][n])ST.subData[m.name][n]={h:0,m:0,rev:0,ok:false};});
+});
 
-function pct(v,m){return m>0?Math.min(100,Math.round(v/m*100)):0;}
-function barColor(v,m){return v>=m&&m>0?"#1D9E75":v>0?"#378ADD":"#B5D4F4";}
-function subColor(p){if(p===null)return"#bbb";if(p>=80)return"#1D9E75";if(p>=50)return"#EF9F27";return"#E24B4A";}
+function pct(v,mx){return mx>0?Math.min(100,Math.round(v/mx*100)):0;}
+function barColor(v,mx){return v>=mx&&mx>0?"#1D9E75":v>0?"#378ADD":"#B5D4F4";}
+function minsToHM(mins){const h=Math.floor(mins/60);const m=mins%60;return h+'h'+(m>0?' '+m+'min':'');}
+function subTotalMins(matName){
+  const sd=ST.subData[matName];if(!sd)return 0;
+  return Object.values(sd).reduce((a,v)=>a+(v.h*60+v.m),0);
+}
+function subTotalRev(matName){
+  const sd=ST.subData[matName];if(!sd)return 0;
+  return Object.values(sd).reduce((a,v)=>a+v.rev,0);
+}
+function subDoneCount(matName){
+  const sd=ST.subData[matName];if(!sd)return 0;
+  return Object.values(sd).filter(v=>v.ok).length;
+}
 
 function updateSummary(){
   const tH=ST.mat.reduce((a,m)=>a+m.horas,0);
@@ -269,27 +240,115 @@ function updateSummary(){
   const rF=ST.mat.reduce((a,m)=>a+m.revF,0);
   const conc=ST.mat.filter(m=>m.ok).length;
   const semH=ST.sem.reduce((a,s)=>a+s.horas,0);
+  const subMins=ST.mat.reduce((a,m)=>a+subTotalMins(m.name),0);
+  const subH=Math.round(subMins/60*10)/10;
   document.getElementById('sg').innerHTML=`
     <div class="sc"><div class="sl">&#8987; Horas estudadas</div><div class="sv">${tH}h</div><div class="ss">Meta: ${tM}h · ${pct(tH,tM)}%</div></div>
+    <div class="sc"><div class="sl">&#128218; Tempo subtópicos</div><div class="sv">${subH}h</div><div class="ss">${subMins%60>0?(Math.floor(subMins/60)+'h '+(subMins%60)+'min'):(subH+'h')}</div></div>
     <div class="sc"><div class="sl">&#8635; Revisões</div><div class="sv">${rF}/${rM}</div><div class="ss">${rM>0?pct(rF,rM):0}% concluídas</div></div>
     <div class="sc"><div class="sl">&#10003; Concluídas</div><div class="sv">${conc}</div><div class="ss">de ${ST.mat.length} matérias</div></div>
     <div class="sc"><div class="sl">&#128197; Horas nas semanas</div><div class="sv">${semH}h</div><div class="ss">de 448h no total</div></div>
   `;
 }
 
-function buildSubRows(name){
-  const list=SUBS[name];
-  if(!list||!list.length)return'';
-  const key=name.replace(/[\s.]/g,'_');
-  const rows=list.map(s=>{
-    const col=subColor(s.p);
-    return`<div class="sub-item">
-      <span class="sub-name">${s.n}</span>
-      <div class="sub-bar-out"><div class="sub-bar-in" style="width:${s.p!==null?s.p:0}%;background:${col}"></div></div>
-      ${s.p!==null?`<span class="sub-pct" style="color:${col}">${s.p}%</span>`:`<span class="sub-nd">não inic.</span>`}
-    </div>`;
+function buildSubTable(matName){
+  const names=SUBS_DEF[matName]||[];
+  if(!names.length)return'';
+  const key=matName.replace(/[\s.]/g,'_');
+  const sd=ST.subData[matName]||{};
+  const rows=names.map((n,si)=>{
+    const d=sd[n]||{h:0,m:0,rev:0,ok:false};
+    const mk=key+'__'+si;
+    const totalMins=d.h*60+d.m;
+    const col=totalMins>0?(d.ok?'#1D9E75':'#378ADD'):'#ddd';
+    return`<tr>
+      <td class="sub-name-cell${d.ok?' done':''}" id="sname_${mk}">${n}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:2px">
+          <input class="time-input" type="number" min="0" max="99" value="${d.h}" placeholder="0" oninput="setSubH('${matName}','${n}',this.value)" title="Horas">
+          <span class="time-sep">h</span>
+          <input class="time-input" type="number" min="0" max="59" value="${d.m}" placeholder="00" oninput="setSubM('${matName}','${n}',this.value)" title="Minutos">
+          <span class="time-sep">min</span>
+        </div>
+      </td>
+      <td>
+        <div style="display:flex;align-items:center;gap:3px">
+          <input class="rev-input" type="number" min="0" max="999" value="${d.rev}" placeholder="0" oninput="setSubRev('${matName}','${n}',this.value)" title="Revisões (minutos)">
+          <span style="font-size:11px;color:#aaa">min</span>
+        </div>
+      </td>
+      <td>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div style="width:60px;height:4px;background:#e8e8e2;border-radius:2px;overflow:hidden"><div style="height:100%;border-radius:2px;background:${col};width:${totalMins>0?'100%':'0%'}"></div></div>
+          <span style="font-size:11px;color:${col};min-width:36px">${totalMins>0?minsToHM(totalMins):'—'}</span>
+        </div>
+      </td>
+      <td style="text-align:center"><input type="checkbox" ${d.ok?'checked':''} onchange="setSubOk('${matName}','${n}',this.checked)" style="width:15px;height:15px;cursor:pointer;accent-color:#1D9E75" title="Concluído"></td>
+    </tr>`;
   }).join('');
-  return`<tr class="prog-row" id="sub_${key}" style="display:none"><td colspan="9"><div class="sub-inner">${rows}</div></td></tr>`;
+  const done=names.filter(n=>(sd[n]||{}).ok).length;
+  const totalMins=names.reduce((a,n)=>a+((sd[n]||{h:0,m:0}).h*60+(sd[n]||{h:0,m:0}).m),0);
+  const totalRev=names.reduce((a,n)=>a+((sd[n]||{}).rev||0),0);
+  return`<tr class="prog-row" id="sub_${key}" style="display:none">
+    <td colspan="9" style="padding:0!important">
+      <div style="padding:0 0 4px 0">
+        <div style="display:flex;align-items:center;gap:16px;padding:6px 12px 6px 44px;background:#f0f0ec;font-size:11px;color:#888;border-bottom:1px solid #e8e8e2">
+          <span>&#10003; ${done}/${names.length} concluídos</span>
+          <span>&#8987; Total: ${totalMins>0?minsToHM(totalMins):'0h'}</span>
+          <span>&#8635; Revisões: ${totalRev>0?minsToHM(totalRev):'0min'}</span>
+        </div>
+        <table class="sub-table">
+          <thead><tr>
+            <th style="padding-left:44px;min-width:180px">Subtópico</th>
+            <th style="min-width:130px">Tempo estudado</th>
+            <th style="min-width:100px">Revisão</th>
+            <th style="min-width:110px">Total</th>
+            <th style="min-width:60px;text-align:center">OK</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </td>
+  </tr>`;
+}
+
+function setSubH(matName,subName,v){
+  if(!ST.subData[matName])ST.subData[matName]={};
+  if(!ST.subData[matName][subName])ST.subData[matName][subName]={h:0,m:0,rev:0,ok:false};
+  ST.subData[matName][subName].h=Math.max(0,parseInt(v)||0);
+  save();refreshSubSummary(matName);updateSummary();
+}
+function setSubM(matName,subName,v){
+  if(!ST.subData[matName])ST.subData[matName]={};
+  if(!ST.subData[matName][subName])ST.subData[matName][subName]={h:0,m:0,rev:0,ok:false};
+  ST.subData[matName][subName].m=Math.min(59,Math.max(0,parseInt(v)||0));
+  save();refreshSubSummary(matName);updateSummary();
+}
+function setSubRev(matName,subName,v){
+  if(!ST.subData[matName])ST.subData[matName]={};
+  if(!ST.subData[matName][subName])ST.subData[matName][subName]={h:0,m:0,rev:0,ok:false};
+  ST.subData[matName][subName].rev=Math.max(0,parseInt(v)||0);
+  save();refreshSubSummary(matName);
+}
+function setSubOk(matName,subName,v){
+  if(!ST.subData[matName])ST.subData[matName]={};
+  if(!ST.subData[matName][subName])ST.subData[matName][subName]={h:0,m:0,rev:0,ok:false};
+  ST.subData[matName][subName].ok=v;
+  save();refreshSubSummary(matName);updateSummary();
+}
+
+function refreshSubSummary(matName){
+  const names=SUBS_DEF[matName]||[];
+  const sd=ST.subData[matName]||{};
+  const done=names.filter(n=>(sd[n]||{}).ok).length;
+  const totalMins=names.reduce((a,n)=>a+((sd[n]||{h:0,m:0}).h*60+(sd[n]||{h:0,m:0}).m),0);
+  const totalRev=names.reduce((a,n)=>a+((sd[n]||{}).rev||0),0);
+  const key=matName.replace(/[\s.]/g,'_');
+  const tr=document.getElementById('sub_'+key);
+  if(tr){
+    const sumEl=tr.querySelector('div[style*="background:#f0f0ec"]');
+    if(sumEl)sumEl.innerHTML=`<span>&#10003; ${done}/${names.length} concluídos</span><span>&#8987; Total: ${totalMins>0?minsToHM(totalMins):'0h'}</span><span>&#8635; Revisões: ${totalRev>0?minsToHM(totalRev):'0min'}</span>`;
+  }
 }
 
 function toggleSub(name){
@@ -300,7 +359,7 @@ function toggleSub(name){
   const isOpen=tr.style.display!=='none';
   tr.style.display=isOpen?'none':'table-row';
   ST.expanded[name]=!isOpen;
-  if(btn){btn.classList.toggle('open',!isOpen);}
+  if(btn)btn.classList.toggle('open',!isOpen);
   save();
 }
 
@@ -310,23 +369,26 @@ function updateMatTable(){
     const p=pct(m.horas,m.metaH);
     const rp=pct(m.revF,m.revM);
     const bc=barColor(m.horas,m.metaH);
-    const hasSub=!!(SUBS[m.name]&&SUBS[m.name].length);
+    const hasSub=!!(SUBS_DEF[m.name]&&SUBS_DEF[m.name].length);
     const key=m.name.replace(/[\s.]/g,'_');
     const isOpen=ST.expanded[m.name];
+    const done=subDoneCount(m.name);
+    const total=(SUBS_DEF[m.name]||[]).length;
     html+=`<tr>
-      <td style="padding:4px 8px;text-align:center">${hasSub?`<button class="expand-btn${isOpen?' open':''}" id="ebtn_${key}" onclick="toggleSub('${m.name}')" title="Ver subtópicos" aria-label="Expandir subtópicos">&#8964;</button>`:`<span style="color:#ccc;font-size:12px">—</span>`}</td>
-      <td style="font-weight:600;white-space:nowrap">${m.name}</td>
+      <td style="padding:4px 8px;text-align:center">${hasSub?`<button class="expand-btn${isOpen?' open':''}" id="ebtn_${key}" onclick="toggleSub('${m.name}')" title="Ver subtópicos">&#8964;</button>`:`<span style="color:#ccc;font-size:12px">—</span>`}</td>
+      <td style="font-weight:600;white-space:nowrap">
+        ${m.name}
+        ${hasSub&&total>0?`<span style="font-size:10px;color:#aaa;font-weight:400;margin-left:4px">${done}/${total}</span>`:''}
+      </td>
       <td><span class="badge ${PRIMAP[m.pri]||'bmed'}">${m.pri}</span></td>
-      <td><input class="ni" type="number" min="0" max="999" value="${m.horas}" oninput="setH(${i},this.value)" aria-label="Horas ${m.name}"></td>
-      <td><input class="ni" type="number" min="1" max="999" value="${m.metaH}" oninput="setMeta(${i},this.value)" aria-label="Meta ${m.name}"></td>
+      <td><input class="ni" type="number" min="0" max="999" value="${m.horas}" oninput="setH(${i},this.value)"></td>
+      <td><input class="ni" type="number" min="1" max="999" value="${m.metaH}" oninput="setMeta(${i},this.value)"></td>
       <td><div class="pb"><div class="pbo"><div class="pbi" id="pb_m_${i}" style="width:${p}%;background:${bc}"></div></div><span class="pbt" id="pt_m_${i}" style="color:${bc}">${p}%</span></div></td>
-      <td><input class="ni" type="number" min="0" max="999" value="${m.revM}" oninput="setRevM(${i},this.value)" aria-label="Rev marcadas ${m.name}"></td>
-      <td><div style="display:flex;align-items:center;gap:6px"><input class="ni" type="number" min="0" max="999" value="${m.revF}" oninput="setRevF(${i},this.value)" aria-label="Rev feitas ${m.name}"><span style="font-size:11px;color:#aaa" id="rp_${i}">${m.revM>0?rp+'%':''}</span></div></td>
-      <td><div class="cc"><input type="checkbox" ${m.ok?"checked":""} onchange="setOk(${i},this.checked)" aria-label="Concluída ${m.name}"></div></td>
+      <td><input class="ni" type="number" min="0" max="999" value="${m.revM}" oninput="setRevM(${i},this.value)"></td>
+      <td><div style="display:flex;align-items:center;gap:6px"><input class="ni" type="number" min="0" max="999" value="${m.revF}" oninput="setRevF(${i},this.value)"><span style="font-size:11px;color:#aaa" id="rp_${i}">${m.revM>0?rp+'%':''}</span></div></td>
+      <td><div class="cc"><input type="checkbox" ${m.ok?'checked':''} onchange="setOk(${i},this.checked)"></div></td>
     </tr>`;
-    if(hasSub){
-      html+=buildSubRows(m.name);
-    }
+    if(hasSub)html+=buildSubTable(m.name);
   });
   document.getElementById('mt').innerHTML=html;
   ST.mat.forEach(m=>{
@@ -341,14 +403,13 @@ function updateMatTable(){
 function updateBars(){
   document.getElementById('bc').innerHTML=ST.mat.map((m,i)=>{
     const p=pct(m.horas,m.metaH);
-    const r=100-p;
     return`<div class="bar-row">
       <span class="bar-lbl" title="${m.name}">${m.name}</span>
       <div class="bar-out"><div style="display:flex;height:100%;border-radius:4px;overflow:hidden">
         <div id="bi_${i}" style="width:${p}%;background:#1D9E75;transition:width .25s"></div>
-        <div id="br_${i}" style="width:${r}%;background:#B5D4F4;transition:width .25s"></div>
+        <div id="br_${i}" style="width:${100-p}%;background:#B5D4F4;transition:width .25s"></div>
       </div></div>
-      <span class="bar-meta" id="bm_${i}">${m.horas}h / ${m.metaH}h &nbsp;<b id="bp_${i}">${p}%</b></span>
+      <span class="bar-meta" id="bm_${i}">${m.horas}h / ${m.metaH}h &nbsp;<b>${p}%</b></span>
     </div>`;
   }).join('');
 }
@@ -362,7 +423,7 @@ function updateWeeks(){
     return`<tr>
       <td style="font-weight:600;white-space:nowrap">Semana ${s.sem}</td>
       <td style="font-size:12px;color:#888">${FASES[i]||""}</td>
-      <td><input class="ni" style="width:64px" type="number" min="0" max="168" value="${s.horas}" oninput="setSem(${i},this.value)" aria-label="Horas semana ${s.sem}"></td>
+      <td><input class="ni" style="width:64px" type="number" min="0" max="168" value="${s.horas}" oninput="setSem(${i},this.value)"></td>
       <td><div class="pb"><div class="pbo"><div class="pbi" id="pb_s_${i}" style="width:${p}%;background:${bc}"></div></div><span class="pbt" id="pt_s_${i}" style="color:${bc}">${p}%</span></div></td>
       <td style="font-size:12px;font-weight:600;color:${sc}" id="st_s_${i}">${status}</td>
     </tr>`;
@@ -380,7 +441,7 @@ function refreshMatRow(i){
   if(pt){pt.textContent=p+'%';pt.style.color=bc;}
   if(bi)bi.style.width=p+'%';
   if(br)br.style.width=(100-p)+'%';
-  if(bm)bm.innerHTML=m.horas+'h / '+m.metaH+'h &nbsp;<b id="bp_'+i+'">'+p+'%</b>';
+  if(bm)bm.innerHTML=m.horas+'h / '+m.metaH+'h &nbsp;<b>'+p+'%</b>';
   if(rpe)rpe.textContent=m.revM>0?rp+'%':'';
   updateSummary();save();
 }
@@ -410,19 +471,18 @@ function addMateria(){
   const name=prompt("Nome da nova matéria:");
   if(!name||!name.trim())return;
   ST.mat.push({name:name.trim(),pri:"MÉDIA",metaH:20,horas:0,revM:0,revF:0,ok:false});
+  if(!ST.subData[name.trim()])ST.subData[name.trim()]=defSubData(name.trim());
   save();render();
 }
 
 function render(){updateSummary();updateMatTable();updateBars();updateWeeks();}
 
 function saveBackup(){
-  const data=JSON.stringify(ST,null,2);
-  const blob=new Blob([data],{type:'application/json'});
+  const blob=new Blob([JSON.stringify(ST,null,2)],{type:'application/json'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
-  const date=new Date().toISOString().slice(0,10);
   a.href=url;
-  a.download='dashboard-trt-'+date+'.json';
+  a.download='dashboard-trt-'+new Date().toISOString().slice(0,10)+'.json';
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -434,16 +494,14 @@ function loadBackup(event){
   reader.onload=function(e){
     try{
       const data=JSON.parse(e.target.result);
-      if(!data.mat||!data.sem){alert('Arquivo inválido. Selecione um backup gerado por este dashboard.');return;}
+      if(!data.mat||!data.sem){alert('Arquivo inválido.');return;}
       if(!confirm('Isso vai substituir todos os dados atuais pelo backup. Confirma?'))return;
       Object.assign(ST,data);
       if(!ST.expanded)ST.expanded={};
-      save();
-      render();
+      if(!ST.subData)ST.subData={};
+      save();render();
       showToast('Backup carregado com sucesso!');
-    }catch(err){
-      alert('Erro ao ler o arquivo. Verifique se é um backup válido.');
-    }
+    }catch(err){alert('Erro ao ler o arquivo.');}
   };
   reader.readAsText(file);
   event.target.value='';
@@ -451,41 +509,29 @@ function loadBackup(event){
 
 function showToast(msg){
   let t=document.getElementById('toast');
-  if(!t){
-    t=document.createElement('div');
-    t.id='toast';
-    t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;z-index:9999;transition:opacity .3s';
-    document.body.appendChild(t);
-  }
-  t.textContent=msg;
-  t.style.opacity='1';
-  clearTimeout(t._timer);
+  if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;z-index:9999;transition:opacity .3s';document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity='1';clearTimeout(t._timer);
   t._timer=setTimeout(()=>{t.style.opacity='0';},2500);
 }
 
 function genMD(){
   const tH=ST.mat.reduce((a,m)=>a+m.horas,0);
   const tM=ST.mat.reduce((a,m)=>a+m.metaH,0);
-  const rM=ST.mat.reduce((a,m)=>a+m.revM,0);
-  const rF=ST.mat.reduce((a,m)=>a+m.revF,0);
   const conc=ST.mat.filter(m=>m.ok).length;
-  const semH=ST.sem.reduce((a,s)=>a+s.horas,0);
-  let md="# TRT — Controle de Estudos\n\n";
-  md+="> Exportado em "+new Date().toLocaleDateString('pt-BR')+"\n\n";
-  md+="## Resumo\n\n| Métrica | Valor |\n|---|---|\n";
-  md+=`| Horas estudadas | ${tH}h / ${tM}h (${pct(tH,tM)}%) |\n`;
-  md+=`| Horas nas semanas | ${semH}h |\n`;
-  md+=`| Revisões | ${rF}/${rM} (${pct(rF,rM)}%) |\n`;
-  md+=`| Matérias concluídas | ${conc}/${ST.mat.length} |\n\n`;
-  md+="## Matérias\n\n| Matéria | Prioridade | Horas | Meta | % | Rev. marc. | Rev. feitas | % Rev. | Concluído |\n|---|---|---|---|---|---|---|---|---|\n";
+  let md="# TRT — Controle de Estudos\n\n> Exportado em "+new Date().toLocaleDateString('pt-BR')+"\n\n";
+  md+="## Matérias\n\n| Matéria | Prioridade | Horas | Meta | % | Concluído |\n|---|---|---|---|---|---|\n";
   ST.mat.forEach(m=>{
     const p=pct(m.horas,m.metaH);
-    const rp=pct(m.revF,m.revM);
-    md+=`| ${m.name} | ${m.pri} | ${m.horas}h | ${m.metaH}h | ${p}% | ${m.revM} | ${m.revF} | ${m.revM>0?rp+'%':'—'} | ${m.ok?"✅":"⬜"} |\n`;
-    const subs=SUBS[m.name];
-    if(subs&&subs.length){
-      md+=`\n**Subtópicos — ${m.name}**\n\n| Subtópico | Progresso |\n|---|---|\n`;
-      subs.forEach(s=>{md+=`| ${s.n} | ${s.p!==null?s.p+'%':'não iniciado'} |\n`;});
+    md+=`| ${m.name} | ${m.pri} | ${m.horas}h | ${m.metaH}h | ${p}% | ${m.ok?"✅":"⬜"} |\n`;
+    const names=SUBS_DEF[m.name]||[];
+    if(names.length){
+      md+=`\n**Subtópicos — ${m.name}**\n\n| Subtópico | Tempo | Revisão | OK |\n|---|---|---|---|\n`;
+      const sd=ST.subData[m.name]||{};
+      names.forEach(n=>{
+        const d=sd[n]||{h:0,m:0,rev:0,ok:false};
+        const tm=d.h*60+d.m;
+        md+=`| ${n} | ${tm>0?minsToHM(tm):'—'} | ${d.rev>0?minsToHM(d.rev):'—'} | ${d.ok?"✅":"⬜"} |\n`;
+      });
       md+='\n';
     }
   });
@@ -495,19 +541,20 @@ function genMD(){
 }
 
 function genCSV(){
-  let c="Matéria,Prioridade,Horas,Meta,Progresso%,Rev. marcadas,Rev. feitas,% Revisões,Concluído\n";
+  let c="Matéria,Prioridade,Horas,Meta,Progresso%,Concluído\n";
   ST.mat.forEach(m=>{
-    const p=pct(m.horas,m.metaH);
-    const rp=pct(m.revF,m.revM);
-    c+=`"${m.name}","${m.pri}",${m.horas},${m.metaH},${p}%,${m.revM},${m.revF},${m.revM>0?rp+'%':''},${m.ok?"Sim":"Não"}\n`;
+    c+=`"${m.name}","${m.pri}",${m.horas},${m.metaH},${pct(m.horas,m.metaH)}%,${m.ok?"Sim":"Não"}\n`;
+    const names=SUBS_DEF[m.name]||[];
+    if(names.length){
+      c+="Subtópico,Tempo (min),Revisão (min),OK\n";
+      const sd=ST.subData[m.name]||{};
+      names.forEach(n=>{const d=sd[n]||{h:0,m:0,rev:0,ok:false};c+=`"${n}",${d.h*60+d.m},${d.rev},${d.ok?"Sim":"Não"}\n`;});
+    }
   });
   return c;
 }
 
-function openExport(){
-  document.getElementById('exportArea').value=genMD();
-  document.getElementById('exportModal').classList.add('open');
-}
+function openExport(){document.getElementById('exportArea').value=genMD();document.getElementById('exportModal').classList.add('open');}
 function closeExport(){document.getElementById('exportModal').classList.remove('open');}
 function handleOverlayClick(e){if(e.target===document.getElementById('exportModal'))closeExport();}
 
@@ -517,8 +564,7 @@ function doCopy(type){
   else{const ta=document.getElementById('exportArea');ta.select();document.execCommand('copy');}
   document.querySelectorAll('.mbtn').forEach(b=>{
     if((type==='csv'&&b.textContent.includes('CSV'))||(type==='md'&&b.textContent.includes('Markdown'))){
-      const orig=b.innerHTML;b.innerHTML='&#10003; Copiado!';
-      setTimeout(()=>{b.innerHTML=orig;},2000);
+      const orig=b.innerHTML;b.innerHTML='&#10003; Copiado!';setTimeout(()=>{b.innerHTML=orig;},2000);
     }
   });
 }
