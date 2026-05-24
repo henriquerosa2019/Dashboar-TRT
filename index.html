@@ -1,93 +1,118 @@
-
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard TRT — Técnico Judiciário</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-.dash{padding:1rem 0;font-family:var(--font-sans)}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f5f0;color:#1a1a1a;padding:24px 16px;min-height:100vh}
+.dash{max-width:960px;margin:0 auto}
 .top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:12px}
-.top-title{font-size:18px;font-weight:500;color:var(--color-text-primary)}
-.top-sub{font-size:13px;color:var(--color-text-secondary);margin-top:2px}
-.btn-exp{display:flex;align-items:center;gap:6px;background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:8px 14px;font-size:13px;cursor:pointer;color:var(--color-text-primary)}
-.btn-exp:hover{background:var(--color-background-secondary)}
-.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:1.5rem}
-.sc{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:14px 16px}
-.sl{font-size:12px;color:var(--color-text-secondary);margin-bottom:6px}
-.sv{font-size:22px;font-weight:500;color:var(--color-text-primary);line-height:1}
-.ss{font-size:11px;color:var(--color-text-secondary);margin-top:4px}
-.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;margin-bottom:1.5rem}
-.card-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:0.5px solid var(--color-border-tertiary)}
-.card-title{font-size:15px;font-weight:500;color:var(--color-text-primary)}
-.add-btn{display:flex;align-items:center;gap:4px;background:transparent;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:6px 12px;font-size:12px;cursor:pointer;color:var(--color-text-secondary)}
-.add-btn:hover{background:var(--color-background-secondary);color:var(--color-text-primary)}
+.top-title{font-size:20px;font-weight:600;color:#1a1a1a;display:flex;align-items:center;gap:8px}
+.top-sub{font-size:13px;color:#666;margin-top:3px}
+.btn-exp{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid #ddd;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#333;transition:background .15s}
+.btn-exp:hover{background:#f0f0ec}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:1.5rem}
+.sc{background:#fff;border-radius:8px;padding:14px 16px;border:1px solid #e8e8e2}
+.sl{font-size:12px;color:#888;margin-bottom:6px}
+.sv{font-size:24px;font-weight:600;color:#1a1a1a;line-height:1}
+.ss{font-size:11px;color:#aaa;margin-top:5px}
+.card{background:#fff;border:1px solid #e8e8e2;border-radius:12px;overflow:hidden;margin-bottom:1.5rem}
+.card-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #f0f0ec;background:#fafaf8}
+.card-title{font-size:15px;font-weight:600;color:#1a1a1a;display:flex;align-items:center;gap:6px}
+.add-btn{display:flex;align-items:center;gap:4px;background:transparent;border:1px solid #ddd;border-radius:6px;padding:6px 12px;font-size:12px;cursor:pointer;color:#666;transition:all .15s}
+.add-btn:hover{background:#f5f5f0;color:#333}
 .tscroll{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:13px}
-th{text-align:left;padding:9px 12px;font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary);white-space:nowrap}
-td{padding:9px 12px;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary);vertical-align:middle}
+th{text-align:left;padding:9px 12px;font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #f0f0ec;background:#fafaf8;white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid #f5f5f0;color:#1a1a1a;vertical-align:middle}
 tr:last-child td{border-bottom:none}
-tr:hover td{background:var(--color-background-secondary)}
-.badge{display:inline-flex;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap}
+tr:hover td{background:#fafaf8}
+.badge{display:inline-flex;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
 .bmax{background:#E1F5EE;color:#0F6E56}
 .balta{background:#E6F1FB;color:#185FA5}
 .bmed{background:#FAEEDA;color:#854F0B}
 .pb{display:flex;align-items:center;gap:6px}
-.pbo{flex:1;height:7px;background:var(--color-background-secondary);border-radius:4px;overflow:hidden;min-width:50px}
+.pbo{flex:1;height:7px;background:#f0f0ec;border-radius:4px;overflow:hidden;min-width:50px}
 .pbi{height:100%;border-radius:4px;transition:width .25s}
-.pbt{font-size:12px;font-weight:500;min-width:34px;text-align:right}
-.ni{width:54px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:4px 6px;font-size:13px;text-align:center;background:var(--color-background-primary);color:var(--color-text-primary)}
-.ni:focus{outline:none;border-color:#378ADD;box-shadow:0 0 0 2px rgba(55,138,221,.15)}
+.pbt{font-size:12px;font-weight:600;min-width:34px;text-align:right}
+.ni{width:58px;border:1px solid #ddd;border-radius:6px;padding:4px 6px;font-size:13px;text-align:center;background:#fff;color:#1a1a1a;transition:border-color .15s}
+.ni:focus{outline:none;border-color:#378ADD;box-shadow:0 0 0 3px rgba(55,138,221,.12)}
 .ni::-webkit-inner-spin-button,.ni::-webkit-outer-spin-button{opacity:1}
 .cc{display:flex;align-items:center;justify-content:center}
 .cc input{width:16px;height:16px;cursor:pointer;accent-color:#1D9E75}
 .bar-sect{padding:16px}
 .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.bar-lbl{font-size:12px;color:var(--color-text-secondary);width:145px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bar-out{flex:1;height:22px;background:var(--color-background-secondary);border-radius:4px;overflow:hidden}
-.bar-in{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:6px;font-size:11px;font-weight:500;min-width:30px;transition:width .25s}
-.bar-meta{font-size:11px;color:var(--color-text-secondary);min-width:80px;text-align:right;white-space:nowrap}
+.bar-lbl{font-size:12px;color:#666;width:155px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-out{flex:1;height:22px;background:#f0f0ec;border-radius:4px;overflow:hidden}
+.bar-meta{font-size:11px;color:#888;min-width:90px;text-align:right;white-space:nowrap}
 .leg{display:flex;gap:16px;padding:0 16px 12px;flex-wrap:wrap}
-.li{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--color-text-secondary)}
+.li{display:flex;align-items:center;gap:5px;font-size:11px;color:#888}
 .ld{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.modal-wrap{display:none;min-height:420px;background:rgba(0,0,0,.45);align-items:center;justify-content:center;border-radius:var(--border-radius-lg)}
-.modal-box{background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:24px;width:100%;max-width:460px}
-.modal-title{font-size:16px;font-weight:500;margin-bottom:6px;color:var(--color-text-primary)}
-.modal-sub{font-size:13px;color:var(--color-text-secondary);margin-bottom:14px;line-height:1.6}
-.export-area{width:100%;font-size:11px;font-family:var(--font-mono,monospace);background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:12px;color:var(--color-text-primary);height:200px;resize:vertical;line-height:1.5}
+.expand-btn{background:transparent;border:none;cursor:pointer;color:#bbb;padding:2px 4px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;transition:transform .2s,color .15s;line-height:1}
+.expand-btn:hover{color:#666}
+.expand-btn.open{transform:rotate(180deg)}
+.prog-row td{padding:0!important;background:#fafaf8}
+.sub-inner{padding:8px 12px 10px 44px}
+.sub-item{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid #f0f0ec}
+.sub-item:last-child{border-bottom:none}
+.sub-name{flex:1;font-size:12px;color:#555}
+.sub-bar-out{width:90px;height:5px;background:#e8e8e2;border-radius:3px;overflow:hidden;flex-shrink:0}
+.sub-bar-in{height:100%;border-radius:3px}
+.sub-pct{font-size:11px;font-weight:600;min-width:34px;text-align:right}
+.sub-nd{font-size:11px;color:#bbb;font-style:italic;min-width:34px;text-align:right}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;padding:16px}
+.modal-overlay.open{display:flex}
+.modal-box{background:#fff;border-radius:12px;padding:24px;width:100%;max-width:500px;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal-title{font-size:16px;font-weight:600;margin-bottom:6px;color:#1a1a1a}
+.modal-sub{font-size:13px;color:#666;margin-bottom:14px;line-height:1.6}
+.export-area{width:100%;font-size:11px;font-family:'Courier New',monospace;background:#f5f5f0;border:1px solid #e8e8e2;border-radius:8px;padding:12px;color:#333;height:200px;resize:vertical;line-height:1.5}
 .modal-btns{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-.mbtn{display:flex;align-items:center;gap:6px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:8px 14px;font-size:13px;cursor:pointer;color:var(--color-text-primary)}
-.mbtn:hover{background:var(--color-background-primary)}
-.mbtn-close{margin-left:auto;background:transparent;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:8px 14px;font-size:13px;cursor:pointer;color:var(--color-text-secondary)}
+.mbtn{display:flex;align-items:center;gap:6px;background:#f5f5f0;border:1px solid #ddd;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#333;transition:background .15s}
+.mbtn:hover{background:#eee}
+.mbtn-close{margin-left:auto;background:transparent;border:1px solid #ddd;border-radius:8px;padding:8px 14px;font-size:13px;cursor:pointer;color:#888;transition:background .15s}
+.mbtn-close:hover{background:#f5f5f0}
 </style>
-
+</head>
+<body>
 <div class="dash">
-<h2 class="sr-only">Dashboard de estudos TRT — controle de horas, revisões e progresso por matéria em tempo real.</h2>
 
 <div class="top-bar">
   <div>
-    <div class="top-title"><i class="ti ti-scale" aria-hidden="true" style="margin-right:8px;font-size:20px;vertical-align:-2px"></i>TRT — Técnico Judiciário</div>
+    <div class="top-title">&#9878; TRT — Técnico Judiciário</div>
     <div class="top-sub">Controle de estudos · 16 semanas · Meta: 448h</div>
   </div>
-  <button class="btn-exp" onclick="openExport()"><i class="ti ti-brand-notion" aria-hidden="true"></i>Exportar para Notion</button>
+  <button class="btn-exp" onclick="openExport()">&#128196; Exportar para Notion</button>
 </div>
 
 <div class="sgrid" id="sg"></div>
 
 <div class="card">
   <div class="card-head">
-    <span class="card-title"><i class="ti ti-books" aria-hidden="true" style="margin-right:6px;font-size:16px;vertical-align:-2px"></i>Matérias — horas e revisões</span>
-    <button class="add-btn" onclick="addMateria()"><i class="ti ti-plus" aria-hidden="true"></i>Adicionar</button>
+    <span class="card-title">&#128218; Matérias — horas e revisões</span>
+    <button class="add-btn" onclick="addMateria()">+ Adicionar</button>
   </div>
-  <div class="tscroll"><table><thead><tr>
-    <th style="min-width:150px">Matéria</th>
-    <th>Prioridade</th>
-    <th style="min-width:72px">Horas</th>
-    <th style="min-width:72px">Meta h</th>
-    <th style="min-width:140px">Progresso</th>
-    <th style="min-width:80px">Rev. marc.</th>
-    <th style="min-width:100px">Rev. feitas</th>
-    <th style="min-width:72px">Concluído</th>
-  </tr></thead><tbody id="mt"></tbody></table></div>
+  <div class="tscroll">
+    <table>
+      <thead><tr>
+        <th style="width:32px"></th>
+        <th style="min-width:150px">Matéria</th>
+        <th>Prioridade</th>
+        <th style="min-width:72px">Horas</th>
+        <th style="min-width:72px">Meta h</th>
+        <th style="min-width:140px">Progresso</th>
+        <th style="min-width:80px">Rev. marc.</th>
+        <th style="min-width:100px">Rev. feitas</th>
+        <th style="min-width:72px">Concluído</th>
+      </tr></thead>
+      <tbody id="mt"></tbody>
+    </table>
+  </div>
 </div>
 
 <div class="card">
-  <div class="card-head"><span class="card-title"><i class="ti ti-chart-bar" aria-hidden="true" style="margin-right:6px;font-size:16px;vertical-align:-2px"></i>Horas por matéria</span></div>
+  <div class="card-head"><span class="card-title">&#128202; Horas por matéria</span></div>
   <div class="leg">
     <span class="li"><span class="ld" style="background:#1D9E75"></span>Estudado</span>
     <span class="li"><span class="ld" style="background:#B5D4F4"></span>Restante</span>
@@ -96,63 +121,139 @@ tr:hover td{background:var(--color-background-secondary)}
 </div>
 
 <div class="card" style="margin-bottom:0">
-  <div class="card-head"><span class="card-title"><i class="ti ti-calendar-stats" aria-hidden="true" style="margin-right:6px;font-size:16px;vertical-align:-2px"></i>Semanas — horas por semana</span></div>
-  <div class="tscroll"><table><thead><tr>
-    <th>Semana</th><th>Fase</th>
-    <th style="min-width:90px">Horas</th>
-    <th style="min-width:140px">Progresso (28h)</th>
-    <th>Status</th>
-  </tr></thead><tbody id="wt"></tbody></table></div>
-</div>
-
-<div style="margin-top:1.5rem" id="exportWrap">
-  <div class="modal-wrap" id="exportModal">
-    <div class="modal-box">
-      <div class="modal-title"><i class="ti ti-brand-notion" aria-hidden="true" style="margin-right:6px;vertical-align:-2px"></i>Exportar para Notion</div>
-      <div class="modal-sub">Copie o Markdown abaixo e cole em qualquer página do Notion. As tabelas são reconhecidas automaticamente.</div>
-      <textarea class="export-area" id="exportArea" readonly></textarea>
-      <div class="modal-btns">
-        <button class="mbtn" onclick="doCopy('md')"><i class="ti ti-copy" aria-hidden="true"></i>Copiar Markdown</button>
-        <button class="mbtn" onclick="doCopy('csv')"><i class="ti ti-table" aria-hidden="true"></i>Copiar CSV</button>
-        <button class="mbtn-close" onclick="closeExport()">Fechar</button>
-      </div>
-    </div>
+  <div class="card-head"><span class="card-title">&#128197; Semanas — horas por semana</span></div>
+  <div class="tscroll">
+    <table>
+      <thead><tr>
+        <th>Semana</th><th>Fase</th>
+        <th style="min-width:90px">Horas</th>
+        <th style="min-width:140px">Progresso (28h)</th>
+        <th>Status</th>
+      </tr></thead>
+      <tbody id="wt"></tbody>
+    </table>
   </div>
 </div>
+
+</div><!-- .dash -->
+
+<div class="modal-overlay" id="exportModal" onclick="handleOverlayClick(event)">
+  <div class="modal-box">
+    <div class="modal-title">&#128196; Exportar para Notion</div>
+    <div class="modal-sub">Copie o Markdown abaixo e cole em qualquer página do Notion. As tabelas são reconhecidas automaticamente.</div>
+    <textarea class="export-area" id="exportArea" readonly></textarea>
+    <div class="modal-btns">
+      <button class="mbtn" onclick="doCopy('md')">&#128203; Copiar Markdown</button>
+      <button class="mbtn" onclick="doCopy('csv')">&#128196; Copiar CSV</button>
+      <button class="mbtn-close" onclick="closeExport()">Fechar</button>
+    </div>
+  </div>
 </div>
 
 <script>
 const FASES=["Fase 1","Fase 1","Fase 1","Fase 1","Fase 1","Fase 1","Fase 2","Fase 2","Fase 2","Fase 2","Simulado","Fase 3","Fase 3","Revisão","Revisão","Final"];
 const PRIMAP={MÁXIMA:"bmax",ALTA:"balta",MÉDIA:"bmed"};
 
+const SUBS={
+  "Língua Portuguesa":[
+    {n:"Acentuação",p:78},{n:"Ortografia",p:50},{n:"Estrutura e Formação das Palavras",p:100},
+    {n:"Classes de palavras",p:66},{n:"Verbos",p:49},{n:"Sintaxe da Oração",p:91},
+    {n:"Pronomes Relativos",p:67},{n:"Crase",p:100},{n:"Colocação Pronominal",p:71},
+    {n:"Concordância Verbal e Nominal",p:33},{n:"Pontuação",p:100},{n:"Período composto",p:0},
+    {n:"Redação Oficial",p:100},{n:"Interpretação de Textos",p:45},{n:"Discursiva — Redação",p:null}
+  ],
+  "Raciocínio Lógico":[
+    {n:"Lógica Proposicional",p:56},{n:"Lógica de Argumentação",p:88},
+    {n:"Lógica de Associação / Verdades e Mentiras",p:83},{n:"Operações com Conjuntos",p:67},
+    {n:"Princípio da Casa dos Pombos",p:100},{n:"Sequências Lógicas",p:100},
+    {n:"Análise Combinatória",p:100},{n:"Probabilidade",p:100},{n:"Matemática Básica",p:0},
+    {n:"MDC e MMC",p:83},{n:"Equações e Sistemas",p:0},{n:"Razão e Proporção",p:67},
+    {n:"Porcentagem",p:50},{n:"Juros simples",p:60},{n:"Juros compostos",p:0}
+  ],
+  "Legislação":[
+    {n:"Lei 8.112/90",p:88},{n:"Lei 8.429 — Improbidade Administrativa",p:98},
+    {n:"Lei 9.784/99 — Processo Administrativo",p:100},{n:"Lei de Licitações 14.133/2021",p:64},
+    {n:"LGPD — Lei 13.709/2018",p:100},{n:"Estatuto da Pessoa com Deficiência",p:75},
+    {n:"Resolução CNJ 400/2021",p:null}
+  ],
+  "Administração Pública":[
+    {n:"Conceitos e Introdução",p:80},{n:"Organizações formais modernas",p:100},
+    {n:"Processo Organizacional",p:100},{n:"Planejamento Estratégico",p:83},
+    {n:"Estrutura Organizacional",p:100},{n:"Controle e Indicadores",p:100},
+    {n:"Comunicação Organizacional",p:0},{n:"Gestão por processos",p:20},
+    {n:"Gestão por projetos",p:100},{n:"Gestão para resultados",p:0},
+    {n:"Gestão de contratos",p:75},{n:"Gestão da qualidade",p:100},
+    {n:"Gestão de riscos",p:100},{n:"Gestão de Pessoas",p:100},
+    {n:"Gestão de desempenho",p:100},{n:"Comunicação pública",p:84},
+    {n:"Ética no Serviço Público",p:82}
+  ],
+  "Gestão Pública":[
+    {n:"Orçamento público",p:75},{n:"Princípios orçamentários",p:98},
+    {n:"Leis orçamentárias",p:33},{n:"Receita pública",p:64},
+    {n:"Despesa pública",p:100},{n:"Ciclo orçamentário",p:0},
+    {n:"Emendas ao orçamento",p:null},{n:"Classificação de Materiais",p:78},
+    {n:"Cadastro, pedido e compras",p:50},{n:"Estoques e almoxarifado",p:56},
+    {n:"Armazenamento e layout",p:0},{n:"Distribuição e transportes",p:50},
+    {n:"Ciclo de compras no setor público",p:null},{n:"Gestão patrimonial",p:67},
+    {n:"Lei de Acesso à Informação",p:67}
+  ],
+  "Dir. Constitucional":[
+    {n:"Princípios fundamentais",p:91},{n:"Teoria dos Direitos Fundamentais",p:86},
+    {n:"Direitos individuais e coletivos",p:96},{n:"Remédios Constitucionais",p:89},
+    {n:"Direitos sociais",p:81},{n:"Nacionalidade",p:86},{n:"Direitos políticos",p:80},
+    {n:"Partidos políticos",p:86},{n:"Organização do Estado",p:68},
+    {n:"Administração Pública",p:100},{n:"Poder Executivo",p:100},
+    {n:"Poder Legislativo",p:67},{n:"Poder Judiciário",p:0}
+  ],
+  "Processo do Trabalho":[
+    {n:"Fontes do Dir. Processual",p:56},{n:"Justiça do Trabalho",p:91},
+    {n:"Serviços auxiliares",p:96},{n:"Ministério Público do Trabalho",p:null},
+    {n:"Princípios do Dir. Processual",p:100},{n:"Atos, Termos e Prazos",p:92},
+    {n:"Despesas Processuais",p:61},{n:"Partes e Procuradores",p:null},
+    {n:"Dissídios Individuais",p:null},{n:"Audiências Trabalhistas",p:null},
+    {n:"Provas",p:null},{n:"Procedimentos",p:null},{n:"Execução",p:null},
+    {n:"Embargos à Execução",p:null},{n:"Prescrição e Decadência",p:null},
+    {n:"Processo Judicial Eletrônico",p:null},{n:"Procedimentos Especiais",p:null}
+  ],
+  "Direito do Trabalho":[
+    {n:"Princípios do Dir. do Trabalho",p:null},{n:"Fontes do Dir. do Trabalho",p:100},
+    {n:"Direitos constitucionais dos trabalhadores",p:null},{n:"Direito coletivo",p:null},
+    {n:"Relação de Emprego",p:89},{n:"Sujeitos da Relação de Emprego",p:65},
+    {n:"Contrato Individual de Trabalho",p:78},{n:"Extinção do Contrato",p:73},
+    {n:"Terceirização e Trabalho Temporário",p:null},{n:"Negociação Coletiva",p:null},
+    {n:"Greve",p:null},{n:"Aviso Prévio e Dispensa Coletiva",p:38},
+    {n:"Estabilidade e Garantia Provisória",p:81},{n:"Jornada de Trabalho",p:84},
+    {n:"Salário e Remuneração",p:null},{n:"FGTS",p:null},
+    {n:"Trabalho do Menor",p:null},{n:"Trabalho da Mulher",p:null},
+    {n:"Segurança e Medicina do Trabalho",p:null},{n:"Teletrabalho",p:100},
+    {n:"Dano Extrapatrimonial",p:null}
+  ]
+};
+
 const DEF_MAT=[
   {name:"Língua Portuguesa",pri:"MÁXIMA",metaH:85,horas:0,revM:0,revF:0,ok:false},
   {name:"Dir. Constitucional",pri:"MÁXIMA",metaH:72,horas:0,revM:0,revF:0,ok:false},
-  {name:"Dir. Administrativo",pri:"MÁXIMA",metaH:67,horas:0,revM:0,revF:0,ok:false},
   {name:"Processo do Trabalho",pri:"MÁXIMA",metaH:58,horas:0,revM:0,revF:0,ok:false},
   {name:"Direito do Trabalho",pri:"MÁXIMA",metaH:54,horas:0,revM:0,revF:0,ok:false},
+  {name:"Legislação",pri:"ALTA",metaH:40,horas:0,revM:0,revF:0,ok:false},
   {name:"Raciocínio Lógico",pri:"ALTA",metaH:36,horas:0,revM:0,revF:0,ok:false},
-  {name:"Sustentabilidade/Leg.",pri:"ALTA",metaH:27,horas:0,revM:0,revF:0,ok:false},
-  {name:"Informática",pri:"ALTA",metaH:22,horas:0,revM:0,revF:0,ok:false},
-  {name:"Adm. Pública/Geral",pri:"MÉDIA",metaH:18,horas:0,revM:0,revF:0,ok:false},
-  {name:"Gestão de Pessoas",pri:"MÉDIA",metaH:9,horas:0,revM:0,revF:0,ok:false},
-  {name:"Redação",pri:"MÁXIMA",metaH:20,horas:0,revM:0,revF:0,ok:false},
+  {name:"Administração Pública",pri:"ALTA",metaH:35,horas:0,revM:0,revF:0,ok:false},
+  {name:"Gestão Pública",pri:"ALTA",metaH:30,horas:0,revM:0,revF:0,ok:false},
 ];
 const DEF_SEM=Array.from({length:16},(_,i)=>({sem:i+1,horas:0}));
 
 function load(){
-  try{
-    const s=localStorage.getItem('trt3');
-    if(s)return JSON.parse(s);
-  }catch(e){}
-  return {mat:DEF_MAT.map(m=>({...m})),sem:DEF_SEM.map(s=>({...s}))};
+  try{const s=localStorage.getItem('trt4');if(s)return JSON.parse(s);}catch(e){}
+  return{mat:DEF_MAT.map(m=>({...m})),sem:DEF_SEM.map(s=>({...s})),expanded:{}};
 }
-function save(){try{localStorage.setItem('trt3',JSON.stringify(ST))}catch(e){}}
+function save(){try{localStorage.setItem('trt4',JSON.stringify(ST))}catch(e){}}
 
 const ST=load();
+if(!ST.expanded)ST.expanded={};
 
 function pct(v,m){return m>0?Math.min(100,Math.round(v/m*100)):0;}
 function barColor(v,m){return v>=m&&m>0?"#1D9E75":v>0?"#378ADD":"#B5D4F4";}
+function subColor(p){if(p===null)return"#bbb";if(p>=80)return"#1D9E75";if(p>=50)return"#EF9F27";return"#E24B4A";}
 
 function updateSummary(){
   const tH=ST.mat.reduce((a,m)=>a+m.horas,0);
@@ -162,53 +263,84 @@ function updateSummary(){
   const conc=ST.mat.filter(m=>m.ok).length;
   const semH=ST.sem.reduce((a,s)=>a+s.horas,0);
   document.getElementById('sg').innerHTML=`
-    <div class="sc"><div class="sl"><i class="ti ti-clock" aria-hidden="true"></i> Horas estudadas</div><div class="sv">${tH}h</div><div class="ss">Meta: ${tM}h &nbsp;·&nbsp; ${pct(tH,tM)}%</div></div>
-    <div class="sc"><div class="sl"><i class="ti ti-refresh" aria-hidden="true"></i> Revisões</div><div class="sv">${rF}/${rM}</div><div class="ss">${rM>0?pct(rF,rM):0}% concluídas</div></div>
-    <div class="sc"><div class="sl"><i class="ti ti-check" aria-hidden="true"></i> Concluídas</div><div class="sv">${conc}</div><div class="ss">de ${ST.mat.length} matérias</div></div>
-    <div class="sc"><div class="sl"><i class="ti ti-calendar" aria-hidden="true"></i> Horas nas semanas</div><div class="sv">${semH}h</div><div class="ss">de 448h no total</div></div>
+    <div class="sc"><div class="sl">&#8987; Horas estudadas</div><div class="sv">${tH}h</div><div class="ss">Meta: ${tM}h · ${pct(tH,tM)}%</div></div>
+    <div class="sc"><div class="sl">&#8635; Revisões</div><div class="sv">${rF}/${rM}</div><div class="ss">${rM>0?pct(rF,rM):0}% concluídas</div></div>
+    <div class="sc"><div class="sl">&#10003; Concluídas</div><div class="sv">${conc}</div><div class="ss">de ${ST.mat.length} matérias</div></div>
+    <div class="sc"><div class="sl">&#128197; Horas nas semanas</div><div class="sv">${semH}h</div><div class="ss">de 448h no total</div></div>
   `;
 }
 
+function buildSubRows(name){
+  const list=SUBS[name];
+  if(!list||!list.length)return'';
+  const key=name.replace(/[\s.]/g,'_');
+  const rows=list.map(s=>{
+    const col=subColor(s.p);
+    return`<div class="sub-item">
+      <span class="sub-name">${s.n}</span>
+      <div class="sub-bar-out"><div class="sub-bar-in" style="width:${s.p!==null?s.p:0}%;background:${col}"></div></div>
+      ${s.p!==null?`<span class="sub-pct" style="color:${col}">${s.p}%</span>`:`<span class="sub-nd">não inic.</span>`}
+    </div>`;
+  }).join('');
+  return`<tr class="prog-row" id="sub_${key}" style="display:none"><td colspan="9"><div class="sub-inner">${rows}</div></td></tr>`;
+}
+
+function toggleSub(name){
+  const key=name.replace(/[\s.]/g,'_');
+  const tr=document.getElementById('sub_'+key);
+  const btn=document.getElementById('ebtn_'+key);
+  if(!tr)return;
+  const isOpen=tr.style.display!=='none';
+  tr.style.display=isOpen?'none':'table-row';
+  ST.expanded[name]=!isOpen;
+  if(btn){btn.classList.toggle('open',!isOpen);}
+  save();
+}
+
 function updateMatTable(){
-  document.getElementById('mt').innerHTML=ST.mat.map((m,i)=>{
+  let html='';
+  ST.mat.forEach((m,i)=>{
     const p=pct(m.horas,m.metaH);
     const rp=pct(m.revF,m.revM);
     const bc=barColor(m.horas,m.metaH);
-    return `<tr>
-      <td style="font-weight:500;white-space:nowrap">${m.name}</td>
+    const hasSub=!!(SUBS[m.name]&&SUBS[m.name].length);
+    const key=m.name.replace(/[\s.]/g,'_');
+    const isOpen=ST.expanded[m.name];
+    html+=`<tr>
+      <td style="padding:4px 8px;text-align:center">${hasSub?`<button class="expand-btn${isOpen?' open':''}" id="ebtn_${key}" onclick="toggleSub('${m.name}')" title="Ver subtópicos" aria-label="Expandir subtópicos">&#8964;</button>`:`<span style="color:#ccc;font-size:12px">—</span>`}</td>
+      <td style="font-weight:600;white-space:nowrap">${m.name}</td>
       <td><span class="badge ${PRIMAP[m.pri]||'bmed'}">${m.pri}</span></td>
       <td><input class="ni" type="number" min="0" max="999" value="${m.horas}" oninput="setH(${i},this.value)" aria-label="Horas ${m.name}"></td>
       <td><input class="ni" type="number" min="1" max="999" value="${m.metaH}" oninput="setMeta(${i},this.value)" aria-label="Meta ${m.name}"></td>
-      <td>
-        <div class="pb">
-          <div class="pbo"><div class="pbi" id="pb_m_${i}" style="width:${p}%;background:${bc}"></div></div>
-          <span class="pbt" id="pt_m_${i}" style="color:${bc}">${p}%</span>
-        </div>
-      </td>
+      <td><div class="pb"><div class="pbo"><div class="pbi" id="pb_m_${i}" style="width:${p}%;background:${bc}"></div></div><span class="pbt" id="pt_m_${i}" style="color:${bc}">${p}%</span></div></td>
       <td><input class="ni" type="number" min="0" max="999" value="${m.revM}" oninput="setRevM(${i},this.value)" aria-label="Rev marcadas ${m.name}"></td>
-      <td>
-        <div style="display:flex;align-items:center;gap:6px">
-          <input class="ni" type="number" min="0" max="999" value="${m.revF}" oninput="setRevF(${i},this.value)" aria-label="Rev feitas ${m.name}">
-          <span style="font-size:11px;color:var(--color-text-secondary)" id="rp_${i}">${m.revM>0?rp+'%':''}</span>
-        </div>
-      </td>
+      <td><div style="display:flex;align-items:center;gap:6px"><input class="ni" type="number" min="0" max="999" value="${m.revF}" oninput="setRevF(${i},this.value)" aria-label="Rev feitas ${m.name}"><span style="font-size:11px;color:#aaa" id="rp_${i}">${m.revM>0?rp+'%':''}</span></div></td>
       <td><div class="cc"><input type="checkbox" ${m.ok?"checked":""} onchange="setOk(${i},this.checked)" aria-label="Concluída ${m.name}"></div></td>
     </tr>`;
-  }).join('');
+    if(hasSub){
+      html+=buildSubRows(m.name);
+    }
+  });
+  document.getElementById('mt').innerHTML=html;
+  ST.mat.forEach(m=>{
+    if(ST.expanded[m.name]){
+      const key=m.name.replace(/[\s.]/g,'_');
+      const tr=document.getElementById('sub_'+key);
+      if(tr)tr.style.display='table-row';
+    }
+  });
 }
 
 function updateBars(){
   document.getElementById('bc').innerHTML=ST.mat.map((m,i)=>{
     const p=pct(m.horas,m.metaH);
     const r=100-p;
-    return `<div class="bar-row">
+    return`<div class="bar-row">
       <span class="bar-lbl" title="${m.name}">${m.name}</span>
-      <div class="bar-out">
-        <div style="display:flex;height:100%;border-radius:4px;overflow:hidden">
-          <div id="bi_${i}" style="width:${p}%;background:#1D9E75;transition:width .25s"></div>
-          <div style="width:${r}%;background:#B5D4F4;transition:width .25s" id="br_${i}"></div>
-        </div>
-      </div>
+      <div class="bar-out"><div style="display:flex;height:100%;border-radius:4px;overflow:hidden">
+        <div id="bi_${i}" style="width:${p}%;background:#1D9E75;transition:width .25s"></div>
+        <div id="br_${i}" style="width:${r}%;background:#B5D4F4;transition:width .25s"></div>
+      </div></div>
       <span class="bar-meta" id="bm_${i}">${m.horas}h / ${m.metaH}h &nbsp;<b id="bp_${i}">${p}%</b></span>
     </div>`;
   }).join('');
@@ -219,18 +351,13 @@ function updateWeeks(){
     const p=pct(s.horas,28);
     const bc=s.horas>=28?"#1D9E75":s.horas>0?"#378ADD":"#B5D4F4";
     const status=s.horas===0?"Não iniciado":s.horas>=28?"Meta atingida":s.horas>=20?"Em andamento":"Abaixo da meta";
-    const sc=s.horas>=28?"#1D9E75":s.horas>=20?"#378ADD":s.horas>0?"#EF9F27":"var(--color-text-secondary)";
-    return `<tr>
-      <td style="font-weight:500;white-space:nowrap">Semana ${s.sem}</td>
-      <td style="font-size:12px;color:var(--color-text-secondary)">${FASES[i]||""}</td>
-      <td><input class="ni" style="width:60px" type="number" min="0" max="168" value="${s.horas}" oninput="setSem(${i},this.value)" aria-label="Horas semana ${s.sem}"></td>
-      <td>
-        <div class="pb">
-          <div class="pbo"><div class="pbi" id="pb_s_${i}" style="width:${p}%;background:${bc}"></div></div>
-          <span class="pbt" id="pt_s_${i}" style="color:${bc}">${p}%</span>
-        </div>
-      </td>
-      <td style="font-size:12px;font-weight:500;color:${sc}" id="st_s_${i}">${status}</td>
+    const sc=s.horas>=28?"#1D9E75":s.horas>=20?"#378ADD":s.horas>0?"#EF9F27":"#aaa";
+    return`<tr>
+      <td style="font-weight:600;white-space:nowrap">Semana ${s.sem}</td>
+      <td style="font-size:12px;color:#888">${FASES[i]||""}</td>
+      <td><input class="ni" style="width:64px" type="number" min="0" max="168" value="${s.horas}" oninput="setSem(${i},this.value)" aria-label="Horas semana ${s.sem}"></td>
+      <td><div class="pb"><div class="pbo"><div class="pbi" id="pb_s_${i}" style="width:${p}%;background:${bc}"></div></div><span class="pbt" id="pt_s_${i}" style="color:${bc}">${p}%</span></div></td>
+      <td style="font-size:12px;font-weight:600;color:${sc}" id="st_s_${i}">${status}</td>
     </tr>`;
   }).join('');
 }
@@ -240,21 +367,15 @@ function refreshMatRow(i){
   const p=pct(m.horas,m.metaH);
   const bc=barColor(m.horas,m.metaH);
   const rp=pct(m.revF,m.revM);
-  const pb=document.getElementById('pb_m_'+i);
-  const pt=document.getElementById('pt_m_'+i);
-  const bi=document.getElementById('bi_'+i);
-  const br=document.getElementById('br_'+i);
-  const bm=document.getElementById('bm_'+i);
-  const bp=document.getElementById('bp_'+i);
-  const rpe=document.getElementById('rp_'+i);
+  const el=id=>document.getElementById(id);
+  const pb=el('pb_m_'+i),pt=el('pt_m_'+i),bi=el('bi_'+i),br=el('br_'+i),bm=el('bm_'+i),rpe=el('rp_'+i);
   if(pb){pb.style.width=p+'%';pb.style.background=bc;}
   if(pt){pt.textContent=p+'%';pt.style.color=bc;}
-  if(bi){bi.style.width=p+'%';}
-  if(br){br.style.width=(100-p)+'%';}
-  if(bm&&bp){bm.innerHTML=m.horas+'h / '+m.metaH+'h &nbsp;<b id="bp_'+i+'">'+p+'%</b>';}
-  if(rpe){rpe.textContent=m.revM>0?rp+'%':'';}
-  updateSummary();
-  save();
+  if(bi)bi.style.width=p+'%';
+  if(br)br.style.width=(100-p)+'%';
+  if(bm)bm.innerHTML=m.horas+'h / '+m.metaH+'h &nbsp;<b id="bp_'+i+'">'+p+'%</b>';
+  if(rpe)rpe.textContent=m.revM>0?rp+'%':'';
+  updateSummary();save();
 }
 
 function refreshSemRow(i){
@@ -262,15 +383,13 @@ function refreshSemRow(i){
   const p=pct(s.horas,28);
   const bc=s.horas>=28?"#1D9E75":s.horas>0?"#378ADD":"#B5D4F4";
   const status=s.horas===0?"Não iniciado":s.horas>=28?"Meta atingida":s.horas>=20?"Em andamento":"Abaixo da meta";
-  const sc=s.horas>=28?"#1D9E75":s.horas>=20?"#378ADD":s.horas>0?"#EF9F27":"var(--color-text-secondary)";
-  const pb=document.getElementById('pb_s_'+i);
-  const pt=document.getElementById('pt_s_'+i);
-  const st=document.getElementById('st_s_'+i);
-  if(pb){pb.style.width=p+'%;';pb.style.background=bc;}
+  const sc=s.horas>=28?"#1D9E75":s.horas>=20?"#378ADD":s.horas>0?"#EF9F27":"#aaa";
+  const el=id=>document.getElementById(id);
+  const pb=el('pb_s_'+i),pt=el('pt_s_'+i),st=el('st_s_'+i);
+  if(pb){pb.style.width=p+'%';pb.style.background=bc;}
   if(pt){pt.textContent=p+'%';pt.style.color=bc;}
   if(st){st.textContent=status;st.style.color=sc;}
-  updateSummary();
-  save();
+  updateSummary();save();
 }
 
 function setH(i,v){ST.mat[i].horas=Math.max(0,parseInt(v)||0);refreshMatRow(i);}
@@ -282,8 +401,8 @@ function setSem(i,v){ST.sem[i].horas=Math.max(0,parseInt(v)||0);refreshSemRow(i)
 
 function addMateria(){
   const name=prompt("Nome da nova matéria:");
-  if(!name)return;
-  ST.mat.push({name,pri:"MÉDIA",metaH:20,horas:0,revM:0,revF:0,ok:false});
+  if(!name||!name.trim())return;
+  ST.mat.push({name:name.trim(),pri:"MÉDIA",metaH:20,horas:0,revM:0,revF:0,ok:false});
   save();render();
 }
 
@@ -308,8 +427,14 @@ function genMD(){
     const p=pct(m.horas,m.metaH);
     const rp=pct(m.revF,m.revM);
     md+=`| ${m.name} | ${m.pri} | ${m.horas}h | ${m.metaH}h | ${p}% | ${m.revM} | ${m.revF} | ${m.revM>0?rp+'%':'—'} | ${m.ok?"✅":"⬜"} |\n`;
+    const subs=SUBS[m.name];
+    if(subs&&subs.length){
+      md+=`\n**Subtópicos — ${m.name}**\n\n| Subtópico | Progresso |\n|---|---|\n`;
+      subs.forEach(s=>{md+=`| ${s.n} | ${s.p!==null?s.p+'%':'não iniciado'} |\n`;});
+      md+='\n';
+    }
   });
-  md+="\n## Semanas\n\n| Semana | Fase | Horas | % Meta |\n|---|---|---|---|\n";
+  md+="## Semanas\n\n| Semana | Fase | Horas | % Meta |\n|---|---|---|---|\n";
   ST.sem.forEach((s,i)=>{md+=`| Semana ${s.sem} | ${FASES[i]||""} | ${s.horas}h | ${pct(s.horas,28)}% |\n`;});
   return md;
 }
@@ -326,21 +451,24 @@ function genCSV(){
 
 function openExport(){
   document.getElementById('exportArea').value=genMD();
-  const w=document.getElementById('exportModal');
-  w.style.display='flex';
+  document.getElementById('exportModal').classList.add('open');
 }
-function closeExport(){document.getElementById('exportModal').style.display='none';}
+function closeExport(){document.getElementById('exportModal').classList.remove('open');}
+function handleOverlayClick(e){if(e.target===document.getElementById('exportModal'))closeExport();}
 
 function doCopy(type){
   const txt=type==='csv'?genCSV():genMD();
-  if(navigator.clipboard){navigator.clipboard.writeText(txt);}
-  const btns=document.querySelectorAll('.mbtn');
-  btns.forEach(b=>{if((type==='csv'&&b.textContent.includes('CSV'))||(type==='md'&&b.textContent.includes('Markdown'))){
-    const orig=b.innerHTML;
-    b.innerHTML='<i class="ti ti-check" aria-hidden="true"></i>Copiado!';
-    setTimeout(()=>{b.innerHTML=orig;},2000);
-  }});
+  if(navigator.clipboard){navigator.clipboard.writeText(txt).catch(()=>{});}
+  else{const ta=document.getElementById('exportArea');ta.select();document.execCommand('copy');}
+  document.querySelectorAll('.mbtn').forEach(b=>{
+    if((type==='csv'&&b.textContent.includes('CSV'))||(type==='md'&&b.textContent.includes('Markdown'))){
+      const orig=b.innerHTML;b.innerHTML='&#10003; Copiado!';
+      setTimeout(()=>{b.innerHTML=orig;},2000);
+    }
+  });
 }
 
 render();
 </script>
+</body>
+</html>
